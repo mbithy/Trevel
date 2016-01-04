@@ -354,8 +354,7 @@ rollDice = function()
     if(_stop == false)
     {
         if(trevel.bets.length >= _numberOfBets)
-        {
-            resetArray();
+        {            
             if(_stopOnNumberOfBets === true)
             {
                 logInfomation(true);
@@ -365,6 +364,7 @@ rollDice = function()
                 logInfomation();
                 placeRoll();
             }
+            resetArray();
         }
         else
         {
