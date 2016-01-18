@@ -1,12 +1,3 @@
-/* Bot Name: Trevel
- * AI Focus: Binomial Distribution
- * Link: 
- * Link: 
- * Warning: Do not change any variables value unless indicated by a comment! And make sure your internet is fast enough,
- *          bot will place ghost bets on slow internet which may make you loose. Another fix is increasing the bet interval.
- * Also you may tip/send me a few satoshis at: 17i7TUTg4PHC69CSHLLE2mLXQbpwKHBwf4 if you so wish....
- * Have fun and remember gambling is a risky adventure.
- */
  // ==UserScript==
 // @name         Bot Trevel
 // @version      1.1.3.0
