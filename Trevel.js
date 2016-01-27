@@ -33,6 +33,7 @@ var _stop = false,
     _minNumberOfBets = 50, // min=50
     /** Custom Bet Configuration **/
     _useCustomConfiguration=true,//Change to true to use your own configuration
+    _amountToKelly=5, // Change this to set percentage of your full amount to be used in the Kelly Principle (Can not be more than 100)
     _useKellyPrinciple=true,//change to false to use martingale
     _customMaximumBet=0.00050000,//This is the maximum bet you want placed
     _customMinimumBet=0.00000001,//This is the minimum bet you want placed
@@ -160,6 +161,10 @@ var trevel = {
         trevel.lowBetProbability = 0;
         trevel.lowBetWinsProb = 0;
         trevel.highBetWinsProb = 0;
+        lowBetWins = 0;
+        lowBetWinsProb = 0;
+        highBetWins = 0;
+        highBetWinsProb = 0;
     },
     getNumberOfSuccesses: function()
     {
@@ -281,7 +286,7 @@ randomNumberOfBets = function(max, min)
 }
 calculate_MaxBet = function()
 {
-    _maxBet = ((parseFloat($('#balance').html()) * 20) / 100).toFixed(8);
+    _maxBet = ((parseFloat($('#balance').html()) * _amountToKelly) / 100).toFixed(8);
 }
 doubleOrNothing = function()
 {
@@ -319,8 +324,9 @@ doubleOrNothingCustomConfiguration = function()
         var currMulty = elem2.value;
         if(trevel._nextBet === "HB")
         {
-            betAmount = (trevel.userBalance * ((trevel.highBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
-            if(betAmount > 0)
+            betAmount = (((trevel.userBalance * _amountToKelly)/100) * ((trevel.highBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
+            console.log(betAmount);
+            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 10)
             {
                 //console.log(betAmount);
                 var elem3 = document.getElementById("double_your_btc_stake");
@@ -328,15 +334,16 @@ doubleOrNothingCustomConfiguration = function()
             }
             else
             {
-                var elem4 = document.getElementById("double_your_btc_stake");
-                elem4.value = _customMinimumBet;
+                /*var elem4 = document.getElementById("double_your_btc_stake");
+                elem4.value = _customMinimumBet;*/
+                doubleOrNothing();
             }
         }
         else
         {
-
-            betAmount = (trevel.userBalance *  ((trevel.lowBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
-            if(betAmount > 0)
+            betAmount = (((trevel.userBalance * _amountToKelly)/100)  *  ((trevel.lowBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
+            console.log(betAmount);
+            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 10)
             {
                 //console.log(betAmount);
                 var elem3 = document.getElementById("double_your_btc_stake");
@@ -344,8 +351,9 @@ doubleOrNothingCustomConfiguration = function()
             }
             else
             {
-                var elem4 = document.getElementById("double_your_btc_stake");
-                elem4.value = _customMinimumBet;
+                /*var elem4 = document.getElementById("double_your_btc_stake");
+                elem4.value = _customMinimumBet;*/
+                doubleOrNothing();
             }            
         }
     }
