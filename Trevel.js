@@ -161,9 +161,7 @@ var trevel = {
         trevel.lowBetProbability = 0;
         trevel.lowBetWinsProb = 0;
         trevel.highBetWinsProb = 0;
-        lowBetWins = 0;
         lowBetWinsProb = 0;
-        highBetWins = 0;
         highBetWinsProb = 0;
     },
     getNumberOfSuccesses: function()
@@ -242,6 +240,8 @@ resetArray = function() //keeps the data relevant.
         trevel.looses = 0;
         _rolls = 0;
         randomNumberOfBets(_maxNumberOfBets, _minNumberOfBets);
+        trevel.lowBetWins=0;
+        trevel.highBetWins=0;
     };
 setOriginalUserBalance = function()
 {
@@ -327,7 +327,7 @@ doubleOrNothingCustomConfiguration = function()
         {
             betAmount = (((trevel.userBalance * _amountToKelly)/100) * ((trevel.highBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
             console.log(betAmount);
-            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 10)
+            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 15)
             {
                 //console.log(betAmount);
                 var elem3 = document.getElementById("double_your_btc_stake");
@@ -344,7 +344,7 @@ doubleOrNothingCustomConfiguration = function()
         {
             betAmount = (((trevel.userBalance * _amountToKelly)/100)  *  ((trevel.lowBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
             console.log(betAmount);
-            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 10)
+            if(betAmount > 0 && betAmount < trevel.userBalance && trevel.bets.length > 15)
             {
                 //console.log(betAmount);
                 var elem3 = document.getElementById("double_your_btc_stake");
