@@ -50,7 +50,3 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 ## Coming Up!
 * Under Strategies
   * Fibonacci Series
-* Others
-  * Optimized Kelly Strategy, currently it's just raw _you may want to be carefull with this one as you may loose huge amounts (about half of your total) on single bets_
- 
-

@@ -13,7 +13,7 @@
  */
 var _stop = false,
     _rolls = 0,
-    _currentBalance, _maxBet, _x = 0,
+    _currentBalance, _maxBet=0, _x = 0,
     _maxNumberOfTrails=10000,
     _minNumberOfTrials=5000,
     _numberOfSuccesses = 0,
@@ -284,13 +284,14 @@ randomNumberOfBets = function(max, min)
 {
     _numberOfBets = Math.floor(Math.random() * max) + min;
 }
-calculate_MaxBet = function()
+calculateMaxBet = function()
 {
-    _maxBet = ((parseFloat($('#balance').html()) * _amountToKelly) / 100).toFixed(8);
+    setCurrentUserBalance();
+    _maxBet = ((trevel.userBalance * _amountToKelly) / 100).toFixed(8);
 }
 doubleOrNothing = function()
 {
-    calculate_MaxBet();
+    calculateMaxBet();
     if($('#double_your_btc_bet_lose').html() !== '' && parseFloat($('#double_your_btc_stake').val()) * 2 < _maxBet)
     {
         $('#double_your_btc_2x').click();
