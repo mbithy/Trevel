@@ -1,5 +1,5 @@
 /* Bot Name: Trevel
- * Version: 1.1.3.0
+ * Version: 1.1.5.0
  * AI Focus: Binomial Distribution
  * Build for: Freebitco.in
  * Link: http://freebitco.in/?r=856671
@@ -22,12 +22,18 @@ var _stop = false,
     _stopOnNumberOfBets = false, //Change this to true if you wish to stop betting after a specific number of bets
     _defaultProb=false,
     _swap = true,
+    _betSpeed = 3000,  
+    /** INFO ON _betSpeed
+    * If you want bets to go faster decrease the value 3000, recomended minimum is 1500 (at 1500 you'll need really fast internet and hope the freebitco.in server responds as fast)
+    * If you want to go slower increase the value 3000, recomended max is 5000 (only option if you have tortoise internet)
+    **/
     _verbose = false, //Change this to true if you want to know the stats(profit) after each bet
     _numberOfBets = 46, //You can change this but keep the number of bets low (<135 but >75) to increse AI accuracy.
     _maxNumberOfBets = 50, //max=150
     _minNumberOfBets = 50, // min=50
     /** Custom Bet Configuration **/
-    _useCustomConfiguration=false,//Change to true to use your own configuration
+    _useCustomConfiguration=true,//Change to true to use your own configuration
+    _useKellyPrinciple=true,//change to false to use martingale
     _customMaximumBet=0.00050000,//This is the maximum bet you want placed
     _customMinimumBet=0.00000001,//This is the minimum bet you want placed
     _customMultiplier=2;// This is the multiplier. the default is 2. INFO: The bet amount will be multiplied by this number incese you loose a bet
@@ -48,6 +54,10 @@ var trevel = {
     totalLoses: 0,
     looses: 0,
     _nextBet: "",
+    lowBetWins:0,
+    lowBetWinsProb:0,
+    highBetWins:0,
+    highBetWinsProb:0,
     addBet: function(bet, outcome)
     {
         if(bet === "LB" && outcome === "Win")
@@ -56,6 +66,7 @@ var trevel = {
             trevel.wins++;
             trevel.totalWins++;
             trevel.lowBetCount++;
+            trevel.lowBetWins++;
         }
         if(bet === "LB" && outcome === "Loose")
         {
@@ -70,6 +81,7 @@ var trevel = {
             trevel.wins++;
             trevel.totalWins++;
             trevel.highBetCount++;
+            trevel.highBetWins++;
         }
         if(bet === "HB" && outcome === "Loose")
         {
@@ -132,10 +144,22 @@ var trevel = {
     {
         trevel.lowBetProbability = (1- trevel.highBetProbability).toFixed(2);
     },
+
+    HighBetWinProbability: function()
+    {
+        trevel.highBetWinsProb = (trevel.highBetWins/((trevel.highBetCount+trevel.lowBetCount)).toFixed(2));
+    },
+
+    LowBetWinProbability: function()
+    {
+        trevel.lowBetWinsProb = (trevel.lowBetWins/((trevel.highBetCount+trevel.lowBetCount)).toFixed(2));
+    },
     resetProbabilities: function()
     {
         trevel.highBetProbability = 0;
         trevel.lowBetProbability = 0;
+        trevel.lowBetWinsProb = 0;
+        trevel.highBetWinsProb = 0;
     },
     getNumberOfSuccesses: function()
     {
@@ -154,6 +178,8 @@ var trevel = {
         this.resetProbabilities();
         this.HighBetProbability();
         this.LowBetProbability();
+        this.HighBetWinProbability();
+        this.LowBetWinProbability();
         this.getNumberOfTrials();
         this.getNumberOfSuccesses();        
         if(_defaultProb == false)
@@ -272,15 +298,56 @@ doubleOrNothing = function()
 
 doubleOrNothingCustomConfiguration = function()
 {
-    if($('#double_your_btc_bet_lose').html() !== '' && parseFloat($('#double_your_btc_stake').val()) * _customMultiplier < _customMaximumBet)
+    if(_useKellyPrinciple == false)
     {
-        var elem = document.getElementById("double_your_btc_stake");
-        elem.value = (parseFloat($('#double_your_btc_stake').val()) * _customMultiplier).toFixed(8);
+        if($('#double_your_btc_bet_lose').html() !== '' && parseFloat($('#double_your_btc_stake').val()) * _customMultiplier < _customMaximumBet)
+        {
+            var elem = document.getElementById("double_your_btc_stake");
+            elem.value = (parseFloat($('#double_your_btc_stake').val()) * _customMultiplier).toFixed(8);
+        }
+        else
+        {
+            var elem = document.getElementById("double_your_btc_stake");
+            elem.value = _customMinimumBet;
+        }
     }
     else
     {
-        var elem = document.getElementById("double_your_btc_stake");
-        elem.value = _customMinimumBet;
+        setCurrentUserBalance();
+        var betAmount = 0;
+        var elem2 = document.getElementById("double_your_btc_payout_multiplier");
+        var currMulty = elem2.value;
+        if(trevel._nextBet === "HB")
+        {
+            betAmount = (trevel.userBalance * ((trevel.highBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
+            if(betAmount > 0)
+            {
+                //console.log(betAmount);
+                var elem3 = document.getElementById("double_your_btc_stake");
+                elem3.value = betAmount;
+            }
+            else
+            {
+                var elem4 = document.getElementById("double_your_btc_stake");
+                elem4.value = _customMinimumBet;
+            }
+        }
+        else
+        {
+
+            betAmount = (trevel.userBalance *  ((trevel.lowBetWinsProb * currMulty  - 1))/(currMulty - 1)).toFixed(8);
+            if(betAmount > 0)
+            {
+                //console.log(betAmount);
+                var elem3 = document.getElementById("double_your_btc_stake");
+                elem3.value = betAmount;
+            }
+            else
+            {
+                var elem4 = document.getElementById("double_your_btc_stake");
+                elem4.value = _customMinimumBet;
+            }            
+        }
     }
 }
 logInfomation = function(isStopped)
@@ -302,11 +369,7 @@ logInfomation = function(isStopped)
 }
 placeRoll = function()
 {
-    setTimeout(rollDice, (3000) + Math.round(Math.random() * 1000)); // remember the warning 3000 here is the bet interval, you can increse it or decrese it.
-    /** INFO 
-    * If you want bets to go faster decrease the value 3000, recomended minimum is 1000 (at 1000 you'll need really fast internet)
-    * If you want to go slower increase the value 3000, recomended max is 5000 (only option if you have tortoise internet)
-    **/
+    setTimeout(rollDice, (_betSpeed) + Math.round(Math.random() * 1000)); 
 }
 rollDice = function()
 {
@@ -378,12 +441,3 @@ rollDice = function()
 };
 setOriginalUserBalance();
 rollDice();
-/* ToDo:
- * Enable manual setting of minimum bet amount ---DONE
- * Enable manual setting of Maximum bet amount ---DONE
- * Enable manual setting of multiplier ---DONE
- * Find other types of probabilities to use ---IN PROGRESS
- * Record result partern
- * Analyze result patern
- * Enable betting on result patern
- */

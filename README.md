@@ -36,5 +36,21 @@ _Gambling is a risky adventure and the only sure thing you can bet on is **yours
 6. Grab some pop corns and get comfortable. Trevel will gamble on your behalf
 
 #### Alright sparky, you are good to go. Knock them out!!!
+
+## Updates in version 1.1.5.0
+
+**The Kelly Principle**
+* While most gamblers don't know this, the Kelly Principle/ Kelly Criterion is a formula used to determine
+the optimal size of a series of bets. In most gambling scenarios, and some investing scenarios under some simplifying assumptions,
+**the Kelly strategy will do better than any essentially different strategy in the long run** that is, over a span of time in which the observed fraction of bets that are successful equals the probability that any given bet will be successful. Learn more about it here [Kelly Criterion](https://en.wikipedia.org/wiki/Kelly_criterion)
+
+* Added a user friendly way of changing the betting speed along with some usefull tips on betting speed.
+* Discarded betting partern analysis. It added no advantage to the gambler
+
+## Coming Up!
+* Under Strategies
+  * Fibonacci Series
+* Others
+  * Optimized Kelly Strategy, currently it's just raw _you may want to be carefull with this one as you may loose huge amounts (about half of your total) on single bets_
  
 
