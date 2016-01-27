@@ -37,7 +37,7 @@ _Gambling is a risky adventure and the only sure thing you can bet on is **yours
 
 #### Alright sparky, you are good to go. Knock them out!!!
 
-## Updates in version 1.1.5.0
+## Updates in version 1.1.5.2
 
 **The Kelly Principle**
 * While most gamblers don't know this, the Kelly Principle/ Kelly Criterion is a formula used to determine
