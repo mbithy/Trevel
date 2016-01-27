@@ -49,4 +49,4 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 
 ## Coming Up!
 * Under Strategies
-  * Fibonacci Series
+  * Fibonacci Series --- Though this is also a loosing strategy see [DiceBot by Seuntjie900](https://github.com/Seuntjie900/DiceBot)

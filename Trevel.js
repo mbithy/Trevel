@@ -161,8 +161,6 @@ var trevel = {
         trevel.lowBetProbability = 0;
         trevel.lowBetWinsProb = 0;
         trevel.highBetWinsProb = 0;
-        lowBetWinsProb = 0;
-        highBetWinsProb = 0;
     },
     getNumberOfSuccesses: function()
     {
