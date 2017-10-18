@@ -1,5 +1,6 @@
 # Trevel
 The smartest Bitcoin Gambling bot for [freebitco.in](http://freebitco.in/?r=856671)
+
 Satoshis go to **1PTBfDNpheyH5743a6PJJctzCSmiHxxouV** if you are feeling generous :P
 
 ### What Makes Trevel a Different bot
@@ -56,10 +57,15 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 
 ## Trevel Reinforced version 2.0 {DQ-Trevel.js}
 **Machine learning**
-[RenforceJS](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)
+
+* Added [RenforceJS](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)
+
 **Money management changes**
+
 * Kelly principle will now be default over martingale and used when both are enabled
+
 **Testing Mode**
+
 * Added a testing mode just in case you wanted to see if Machine Learning makes a difference
 * Paste the bot in the console of a new tab on your browser
 * Remember to set isTesting to true
