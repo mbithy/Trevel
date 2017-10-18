@@ -1,7 +1,15 @@
 # Trevel
 The smartest Bitcoin Gambling bot for [freebitco.in](http://freebitco.in/?r=856671)
+Satoshis go to **1PTBfDNpheyH5743a6PJJctzCSmiHxxouV** if you are feeling generous :P
 
 ### What Makes Trevel a Different bot
+
+**Machine Learning using ReinforceJS**
+*All the perks of previous trevel + Learing algos, sweet!!
+*New version is in file DQ-Trevel.js
+*Ready to go already.
+*Total **overkill** for use on a faucets provably fair
+
 **It gives you absolute control**
 * You can manage:
  * Maximum bet Amount
@@ -45,8 +53,14 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 **the Kelly strategy will do better than any essentially different strategy in the long run** that is, over a span of time in which the observed fraction of bets that are successful equals the probability that any given bet will be successful. Learn more about it here [Kelly Criterion](https://en.wikipedia.org/wiki/Kelly_criterion)
 
 * Added a user friendly way of changing the betting speed along with some usefull tips on betting speed.
-* Discarded betting partern analysis. It added no advantage to the gambler
 
-## Coming Up!
-* Under Strategies
-  * Fibonacci Series --- Though this is also a loosing strategy see [DiceBot by Seuntjie900](https://github.com/Seuntjie900/DiceBot)
+## Trevel Reinforced version 2.0 {DQ-Trevel.js}
+**Machine learning**
+[RenforceJS](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)
+**Money management changes**
+*Kelly principle will now be default over martingale and used when both are enabled
+**Testing Mode**
+*Added a testing mode just in case you wanted to see if Machine Learning makes a difference
+*Paste the bot in the console of a new tab on your browser
+*Remember to set isTesting to true
+
