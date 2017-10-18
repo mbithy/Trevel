@@ -5,10 +5,10 @@ Satoshis go to **1PTBfDNpheyH5743a6PJJctzCSmiHxxouV** if you are feeling generou
 ### What Makes Trevel a Different bot
 
 **Machine Learning using ReinforceJS**
-*All the perks of previous trevel + Learing algos, sweet!!
-*New version is in file DQ-Trevel.js
-*Ready to go already.
-*Total **overkill** for use on a faucets provably fair
+* All the perks of previous trevel + Learing algos, sweet!!
+* New version is in file DQ-Trevel.js
+* Ready to go already.
+* Total **overkill** for use on a faucets provably fair
 
 **It gives you absolute control**
 * You can manage:
@@ -58,9 +58,9 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 **Machine learning**
 [RenforceJS](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)
 **Money management changes**
-*Kelly principle will now be default over martingale and used when both are enabled
+* Kelly principle will now be default over martingale and used when both are enabled
 **Testing Mode**
-*Added a testing mode just in case you wanted to see if Machine Learning makes a difference
-*Paste the bot in the console of a new tab on your browser
-*Remember to set isTesting to true
+* Added a testing mode just in case you wanted to see if Machine Learning makes a difference
+* Paste the bot in the console of a new tab on your browser
+* Remember to set isTesting to true
 
