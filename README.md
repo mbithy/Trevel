@@ -61,11 +61,16 @@ the optimal size of a series of bets. In most gambling scenarios, and some inves
 * Added [RenforceJS](https://github.com/karpathy/reinforcejs/blob/master/lib/rl.js)
 
 **Money management changes**
+<<<<<<< HEAD
 
 * Kelly principle will now be default over martingale and used when both are enabled
 
 **Testing Mode**
 
+=======
+* Kelly principle will now be default over martingale and used when both are enabled
+**Testing Mode**
+>>>>>>> 0ef18ceb52944880d005ec371ba9fffa407e12fa
 * Added a testing mode just in case you wanted to see if Machine Learning makes a difference
 * Paste the bot in the console of a new tab on your browser
 * Remember to set isTesting to true
