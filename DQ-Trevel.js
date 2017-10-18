@@ -1745,7 +1745,7 @@ setInterval(function() {
 			}
 			if (Trevel.verbose === true) {
 				Trevel.calculateProbabilities();
-				console.log("Machine Bet: " + action + "{" + Trevel.nextBet + "} WinRate: " + Trevel.winRate + " isKelly: " + trevel.useKelly + " isMartingale: " + Trevel.useMartingale);
+				console.log("Machine Bet: " + action + "{" + Trevel.nextBet + "} WinRate: " + Trevel.winRate + " isKelly: " + Trevel.useKelly + " isMartingale: " + Trevel.useMartingale);
 				console.log("Profit: " + Trevel.profit);
 			}
 		} else {
