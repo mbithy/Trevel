@@ -1518,7 +1518,7 @@ var Trevel = {
 	maxBet: 0.00001,
 	minBet: 0.00000002,
 	swap: true,
-	betSpeed: 3000,
+	betSpeed: 100,//change this on init
 	verbose: true,
 	isTesting: false,
 	//money management
@@ -1541,6 +1541,7 @@ var Trevel = {
 	hbCount: 0,
 	lbcount: 0,
 	nextBet: "",
+	previousReward:0,
 	addBet: function(bet, outcome) {
 		if (bet === "LB" && outcome === "Win") {
 			Trevel.betHistory.push("LO");
@@ -1570,7 +1571,9 @@ var Trevel = {
 		Trevel.hbProbability = Trevel.hbCount / Trevel.betHistory.length;
 		Trevel.lbProbability = Trevel.lbcount / Trevel.betHistory.length;
 		Trevel.winRate = Trevel.totalWins / Trevel.totalBets;
+		if(Trevel.isTesting===false){
 		Trevel.profit = Trevel.getProfit();
+		}
 	},
 	getCurrentBalance: function() {
 		return parseFloat($('#balance').html());
@@ -1675,12 +1678,35 @@ var Trevel = {
 	},
 	getReward: function() {
 		var reward = 0;
-		if (Trevel.betOutcomes.length > 5) { //max reward is 5 for 5 consecutive wins and minimum -5 for 5 consecutive losses
-			for (var r = 1; r < 5; r++) {
-				if (Trevel.betOutcomes[Trevel.betOutcomes.length - r] === "L") {
-					reward = reward - 1;
-				} else {
-					reward = reward + 1;
+		var out1=Trevel.betOutcomes[Trevel.betOutcomes.length - 1];
+		var out2=Trevel.betOutcomes[Trevel.betOutcomes.length - 2];
+		if(out1==="L"){
+			if(Trevel.previousReward<0){
+				reward=Trevel.previousReward;
+				reward+=-0.03;
+				if(out2==="L"){
+					reward+=-0.03;
+				}
+			}
+			else{
+				reward=-0.03;
+				if(out2==="L"){
+					reward+=-0.03;
+				}
+			}
+		}
+		else{
+			if(Trevel.previousReward>0){
+				reward=Trevel.previousReward;
+				reward+=0.01;
+				if(out2==="W"){
+					reward+=0.01;
+				}
+			}
+			else{
+				reward=0.01;
+				if(out2==="W"){
+					reward+=0.01;
 				}
 			}
 		}
@@ -1703,6 +1729,7 @@ var Trevel = {
 		Trevel.setBetAmount(Trevel.minBet);
 		Trevel.stop = false;
 		Trevel.swap = true;
+		Trevel.betSpeed=3000;
 	}
 };
 //Deep Q learning with reinforceJS
@@ -1710,71 +1737,73 @@ var spec = {}
 spec.update = 'qlearn';
 spec.gamma = 0.9;
 spec.epsilon = 0.45;
-spec.alpha = 0.1;
+spec.alpha = 0.01;
 spec.lambda = 0;
 spec.replacing_traces = true;
-spec.planN = 50;
-spec.experience_size = 5000;
+spec.planN = 8;
+spec.experience_size = 100000;
 spec.smooth_policy_update = true;
 spec.beta = 0.1;
 // create an environment object
 var env = Trevel;
-if (Trevel.isTesting === false) {
+if (env.isTesting === false) {
 	env.init();
 }
 // create the DQN agent
 agent = new RL.DQNAgent(env, spec);
+//agent = new RL.TDAgent(env, spec);
 setInterval(function() {
-	if (Trevel.stop === false) {
+	if (env.stop === false) {
 		var state = env.getAgentState();
 		var action = agent.act(state);
 		var outcome = "";
-		if (Trevel.isTesting === false) {
+		if (env.isTesting === false) {
 			if (action === 0) {
-				Trevel.nextBet = "LB";
-				Trevel.prepareBet();
-				Trevel.placeBet();
-				Trevel.setOutcome("LB");
-				outcome = Trevel.betOutcomes[Trevel.betOutcomes.length - 1];
+				env.nextBet = "LB";
+				env.prepareBet();
+				env.placeBet();
+				env.setOutcome("LB");
+				outcome = env.betOutcomes[env.betOutcomes.length - 1];
 			} else if (action === 1) {
-				Trevel.nextBet = "HB";
-				Trevel.prepareBet();
-				Trevel.placeBet();
-				Trevel.setOutcome("HB");
-				outcome = Trevel.betOutcomes[Trevel.betOutcomes.length - 1];
+				env.nextBet = "HB";
+				env.prepareBet();
+				env.placeBet();
+				env.setOutcome("HB");
+				outcome = env.betOutcomes[env.betOutcomes.length - 1];
 			}
-			if (Trevel.verbose === true) {
-				Trevel.calculateProbabilities();
-				console.log("Machine Bet: " + action + "{" + Trevel.nextBet + "} WinRate: " + Trevel.winRate + " isKelly: " + Trevel.useKelly + " isMartingale: " + Trevel.useMartingale);
-				console.log("Profit: " + Trevel.profit);
+			if (env.verbose === true) {
+				env.calculateProbabilities();
+				console.log("Machine Bet: " + action + "{" + env.nextBet + "} WinRate: " + env.winRate + " isKelly: " + env.useKelly + " isMartingale: " + env.useMartingale);
+				console.log("Profit: " + env.profit);
 			}
 		} else {
 			console.log("Action: " + action);
-			var testOutcome = Trevel.getTestOutcome(Trevel.randomNumber(0, 1000));
+			var testOutcome = env.getTestOutcome(env.randomNumber(0, 1000));
 			if (action === 0 && testOutcome === "LO") {
-				Trevel.addBet("LB", "Win");
+				env.addBet("LB", "Win");
 				outcome = "W";
 			} else if (action === 0 && testOutcome === "HI") {
-				Trevel.addBet("LB", "Loose");
+				env.addBet("LB", "Loose");
 				outcome = "L";
 			} else if (action === 1 && testOutcome === "HI") {
-				Trevel.addBet("HB", "Win");
+				env.addBet("HB", "Win");
 				outcome = "W";
 			} else if (action === 1 && testOutcome === "LO") {
-				Trevel.addBet("HB", "Loose");
+				env.addBet("HB", "Loose");
 				outcome = "L";
 			}
-			Trevel.calculateProbabilities();
-			console.log("HBP: " + Trevel.hbProbability + " LBP: " + Trevel.lbProbability + " Winrate: " + Trevel.winRate);
+			env.calculateProbabilities();
+			console.log("Winrate: " + (env.winRate*100).toFixed(2));
 		}
-		var reward = Trevel.getReward();
+		var reward = env.getReward();
 		if (reward == 0) {
 			if (outcome === "L") {
-				reward = -1;
+				reward = -0.03;
 			} else {
-				reward = 1;
+				reward = 0.01;
 			}
 		}
 		agent.learn(reward);
+		env.previousReward=reward;
 	}
-}, Trevel.betSpeed);
+}, env.betSpeed);
