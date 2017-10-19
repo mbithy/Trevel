@@ -1522,9 +1522,9 @@ var Trevel = {
 	verbose: true,
 	isTesting: false,
 	//money management
-	useKelly: true,
+	useKelly: false,//martingale performs better on live account!
 	kellyPercent: 5, //can't be more than 100 or less than 1
-	useMartingale: false, //if kelly is true this won't work
+	useMartingale: true, //if kelly is true this won't work
 	martingaleMultiplier: 2,
 	//bot settings, these are set automaticcally don't bother
 	currentBalance: 0,
@@ -1598,7 +1598,7 @@ var Trevel = {
 	prepareBet: function() {
 		Trevel.calculateProbabilities();
 		if (Trevel.betHistory.length < 10) {
-			if (Trevel.useMartingale === true) {
+			if (Trevel.useMartingale === true && Trevel.betHistory.length>12) {
 				if ($('#double_your_btc_bet_lose').html() !== '' && parseFloat($('#double_your_btc_stake').val()) * Trevel.martingaleMultiplier < Trevel.maxBet) {
 					Trevel.setBetAmount((parseFloat($('#double_your_btc_stake').val()) * Trevel.martingaleMultiplier).toFixed(8));
 				} else {
@@ -1606,7 +1606,7 @@ var Trevel = {
 				}
 			}
 		} else {
-			if (Trevel.useKelly === true) {
+			if (Trevel.useKelly === true && Trevel.betHistory.length>12) {
 				Trevel.currentBalance = Trevel.getCurrentBalance();
 				var currMulty = document.getElementById("double_your_btc_payout_multiplier").value;
 				var kellyAmount = (((Trevel.currentBalance * Trevel.kellyPercent) / 100) * ((Trevel.winRate * currMulty - 1)) / (currMulty - 1)).toFixed(8);
@@ -1615,7 +1615,7 @@ var Trevel = {
 				} else {
 					Trevel.setBetAmount(Trevel.minBet);
 				}
-			} else if (Trevel.useMartingale === true) {
+			} else if (Trevel.useMartingale === true && Trevel.betHistory.length>12) {
 				if ($('#double_your_btc_bet_lose').html() !== '' && parseFloat($('#double_your_btc_stake').val()) * Trevel.martingaleMultiplier < Trevel.maxBet) {
 					Trevel.setBetAmount((parseFloat($('#double_your_btc_stake').val()) * Trevel.martingaleMultiplier).toFixed(8));
 				} else {
@@ -1658,7 +1658,7 @@ var Trevel = {
 	},
 	getPreviousBets: function() {
 		var hist = [];
-		if (Trevel.betHistory.length > 9) {
+		if (Trevel.betHistory.length > 12) {
 			hist.push(Trevel.getSentiment(Trevel.betHistory[Trevel.betHistory.length - 1]));
 			hist.push(Trevel.getSentiment(Trevel.betHistory[Trevel.betHistory.length - 2]));
 			hist.push(Trevel.getSentiment(Trevel.betHistory[Trevel.betHistory.length - 3]));
@@ -1738,12 +1738,11 @@ spec.update = 'qlearn';
 spec.gamma = 0.9;
 spec.epsilon = 0.45;
 spec.alpha = 0.01;
-spec.lambda = 0;
-spec.replacing_traces = true;
-spec.planN = 8;
+spec.experience_add_every = 12;
 spec.experience_size = 100000;
-spec.smooth_policy_update = true;
-spec.beta = 0.1;
+spec.learning_steps_per_iteration = 24;
+spec.tderror_clamp = 0.7; 
+spec.num_hidden_units = 24;
 // create an environment object
 var env = Trevel;
 if (env.isTesting === false) {
@@ -1751,7 +1750,6 @@ if (env.isTesting === false) {
 }
 // create the DQN agent
 agent = new RL.DQNAgent(env, spec);
-//agent = new RL.TDAgent(env, spec);
 setInterval(function() {
 	if (env.stop === false) {
 		var state = env.getAgentState();
@@ -1773,8 +1771,8 @@ setInterval(function() {
 			}
 			if (env.verbose === true) {
 				env.calculateProbabilities();
-				console.log("Machine Bet: " + action + "{" + env.nextBet + "} WinRate: " + env.winRate + " isKelly: " + env.useKelly + " isMartingale: " + env.useMartingale);
-				console.log("Profit: " + env.profit);
+				//console.log("Machine Bet: " + action + "{" + env.nextBet + "} isKelly: " + env.useKelly + " isMartingale: " + env.useMartingale);
+				console.log("Profit: " + env.profit+" WinRate: " + (env.winRate*100).toFixed(2));
 			}
 		} else {
 			console.log("Action: " + action);
