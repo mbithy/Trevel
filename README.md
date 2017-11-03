@@ -3,7 +3,7 @@ The smartest Bitcoin Gambling bot for [freebitco.in](http://freebitco.in/?r=8566
 
 Satoshis go to **1PTBfDNpheyH5743a6PJJctzCSmiHxxouV** if you are feeling generous :P
 
-To learn how to use this bot go to the [WIKI](https://github.com/mbithy/Trevel/wiki)
+### To learn how to use this bot go to the [WIKI](https://github.com/mbithy/Trevel/wiki)
 
 ### What Makes Trevel a Different bot
 
@@ -39,16 +39,6 @@ Prediction is based on a calculated probability. We get the probability using [B
 
 **Remarks**
 _What is paramount right now is a **strategy** the utilizes the streaks to your advantage, which you'll see when running the simulator. If you want to beat provably fair and basically all gambling games regardless of payout this is where you should put your 'thinking' energy. You should also know that Einstein gave up on this saying the only way to beat roulette was to steal the chips and run LOL, then again he din't know AI._
-
-## Usage
-1. Go to [freebitco.in](http://freebitco.in/?r=856671)
-2. Open the multiply your btc tab
-3. Open your browsers console window
-4. Copy DQ-Trevel.js as is, *if you don't wish to train see how to load trainned network above*
-5. Paste on your browsers console
-6. Grab some pop corns and get comfortable. Trevel will gamble on your behalf
-
-#### Alright sparky, you are good to go. Knock them out!!!
 
 ## Updates in version 1.1.5.2
 
