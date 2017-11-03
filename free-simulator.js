@@ -1607,6 +1607,7 @@ var Trevel = {
 	verbose: true,
 	isTesting: true,
 	showEvery:10000,//log to console after bets if verbose is false
+	seedEvery:100,
 	//money management
 	useKelly: false,//martingale performs better on live account!
 	kellyPercent: 5, //can't be more than 100 or less than 1
@@ -1869,7 +1870,7 @@ if (env.isTesting === false) {
 }
 // create the DQN agent
 agent = new RL.DQNAgent(env, spec);
-var winRoll=0,looseRoll=0;
+var winRoll=0,looseRoll=0,roll=0;
 var testAmount=2;
 setInterval(function() {
 	if (env.stop === false) {
@@ -1877,27 +1878,14 @@ setInterval(function() {
 		var action = agent.act(state);
 		var outcome = "";
 		if (env.isTesting === false) {
-			if (action === 0) {
-				env.nextBet = "LB";
-				env.prepareBet();
-				env.placeBet();
-				env.setOutcome("LB");
-				outcome = env.betOutcomes[env.betOutcomes.length - 1];
-			} else if (action === 1) {
-				env.nextBet = "HB";
-				env.prepareBet();
-				env.placeBet();
-				env.setOutcome("HB");
-				outcome = env.betOutcomes[env.betOutcomes.length - 1];
+			console.log("To run live bets DQ-Trevel.js");
+			env.stop=true;
+		} else {			
+			if(roll>=env.seedEvery){
+				env.serverSeed=env.getNewSeed();
+			env.clientSeed=env.getNewSeed();
+			roll=0;
 			}
-			if (env.verbose === true) {
-				env.calculateProbabilities();
-				//console.log("Machine Bet: " + action + "{" + env.nextBet + "} isKelly: " + env.useKelly + " isMartingale: " + env.useMartingale);
-				console.log("Profit: " + env.profit+" WinRate: " + (env.winRate*100).toFixed(2));
-			}
-		} else {
-            env.serverSeed=env.getNewSeed();
-            env.clientSeed=env.getNewSeed();
             var roll=env.rollDice(env.clientSeed,env.serverSeed);
 			env.rollHistory.push(parseInt(roll));
 			if (action === 0 && roll<env.loNum) {
@@ -1941,7 +1929,7 @@ setInterval(function() {
 				env.profit-=testAmount;
 				testAmount*=2;			
 			}
-
+			roll++;
 			if(looseRoll>env.looseStreak){
 				env.looseStreak=looseRoll;
 			}

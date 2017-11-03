@@ -1520,14 +1520,15 @@ var Trevel = {
 	swap: true,
 	betSpeed: 2,//change this on init
 	verbose: true,
-	isTesting: true,
-	showEvery:10000,//log to console after bets if verbose is false
+	isTesting: false,
+	showEvery:100,//log details to console after bets if verbose is false
+	seedEvery:100, // change client seed after?
 	//money management
 	useKelly: false,//martingale performs better on live account!
 	kellyPercent: 5, //can't be more than 100 or less than 1
 	useMartingale: true, //if kelly is true this won't work
 	martingaleMultiplier: 2,
-	//bot settings, these are set automaticcally don't bother
+	//bot settings, these are set automatically don't bother
 	currentBalance: 0,
 	startingBalance: 0,
 	betAmount: 0,
@@ -1590,6 +1591,18 @@ var Trevel = {
 		var elem = document.getElementById("double_your_btc_stake");
 		elem.value = amount;
 	},
+	changeSeed:function(){
+		$('#next_client_seed').val(Trevel.getNewSeed());
+	},
+	getNewSeed:function(){
+        var result = '';
+        var length = 16;
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+        for (var i = length; i > 0; --i) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+            }
+        return result;
+    },
 	setOutcome: function(bet) {
 		if ($('#double_your_btc_bet_lose').html() !== '') {
 			Trevel.addBet(bet, "Loose");
@@ -1714,17 +1727,6 @@ var Trevel = {
 		}
 		return reward;
 	},
-	//for raw testing only
-	randomNumber: function(min, max) {
-		return Math.floor(Math.random() * (max - min + 1) + min);
-	},
-	getTestOutcome: function(random) {
-		if (random % 2 == 0) {
-			return "HI";
-		} else {
-			return "LO";
-		}
-	},
 	//initialize Trevel
 	init: function() {
 		Trevel.startingBalance = Trevel.currentBalance = parseFloat($('#balance').html());
@@ -1735,19 +1737,22 @@ var Trevel = {
 		Trevel.nextLog=Trevel.showEvery;
 	}
 };
+RefreshPageAfterFreePlayTimerEnds = function() {};
 //Deep Q learning with reinforceJS
 var spec = {}
 spec.update = 'qlearn';
 spec.gamma = 0.9;
-spec.epsilon = 0.45;
-spec.alpha = 0.01;
-spec.experience_add_every = 2;
-spec.experience_size = 10000000;
-spec.learning_steps_per_iteration = 4;
-spec.tderror_clamp = 0.2; 
+//if you are loading a trainned network the values here should match your trainning values
+spec.epsilon = 0.20;
+spec.alpha = 0.1;
+spec.experience_add_every = 5;
+spec.experience_size = 999999;
+spec.learning_steps_per_iteration = 5;
+spec.tderror_clamp = 1.0; 
 spec.num_hidden_units = 100;
 // create an environment object
 var env = Trevel;
+var rolls=0;
 if (env.isTesting === false) {
 	env.init();
 }
@@ -1772,32 +1777,24 @@ setInterval(function() {
 				env.setOutcome("HB");
 				outcome = env.betOutcomes[env.betOutcomes.length - 1];
 			}
-			if (env.verbose === true) {
-				env.calculateProbabilities();
-				//console.log("Machine Bet: " + action + "{" + env.nextBet + "} isKelly: " + env.useKelly + " isMartingale: " + env.useMartingale);
-				console.log("Profit: " + env.profit+" WinRate: " + (env.winRate*100).toFixed(2));
-			}
-		} else {
-			//console.log("Action: " + action);
-			var testOutcome = env.getTestOutcome(env.randomNumber(0, 1000));
-			if (action === 0 && testOutcome === "LO") {
-				env.addBet("LB", "Win");
-				outcome = "W";
-			} else if (action === 0 && testOutcome === "HI") {
-				env.addBet("LB", "Loose");
-				outcome = "L";
-			} else if (action === 1 && testOutcome === "HI") {
-				env.addBet("HB", "Win");
-				outcome = "W";
-			} else if (action === 1 && testOutcome === "LO") {
-				env.addBet("HB", "Loose");
-				outcome = "L";
+			rolls++;
+			if(rolls>=env.seedEvery){
+				env.changeSeed();
 			}
 			env.calculateProbabilities();
-			if(env.betOutcomes.length>=env.nextLog){
-			console.log("Winrate: " + (env.winRate*100).toFixed(2)+" Bets: "+env.betOutcomes.length);
-			env.nextLog+=env.showEvery;
+			if (env.verbose === true) {
+				console.log("Profit: " + env.profit+" WinRate: " + (env.winRate*100).toFixed(2)+" Bets: "+env.betHistory.length);
 			}
+			else{
+				if(env.nextLogs>=env.showEvery){					
+					console.log("Profit: " + env.profit+" WinRate: " + (env.winRate*100).toFixed(2)+" Bets: "+env.betHistory.length);
+					env.nextLog+=env.showEvery;
+				}
+			}
+		}
+		 else {
+			console.log("To test this bot or Train a network use free-simulator.js");
+			env.stop=true;
 		}
 		var reward = env.getReward();
 		if (reward == 0) {
