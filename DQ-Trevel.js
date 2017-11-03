@@ -1514,7 +1514,7 @@ var RL = {};
 })(RL);
 var Trevel = {
 	//settings you can change
-	stop: false,
+	stop: true,
 	maxBet: 0.00001,
 	minBet: 0.00000002,
 	swap: true,
