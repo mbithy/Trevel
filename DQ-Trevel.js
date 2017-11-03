@@ -1731,7 +1731,7 @@ var Trevel = {
 	init: function() {
 		Trevel.startingBalance = Trevel.currentBalance = parseFloat($('#balance').html());
 		Trevel.setBetAmount(Trevel.minBet);
-		Trevel.stop = false;
+		Trevel.stop = true;
 		Trevel.swap = true;
 		Trevel.betSpeed=3000;
 		Trevel.nextLog=Trevel.showEvery;
