@@ -1,7 +1,7 @@
 # Trevel
 The smartest Bitcoin Gambling bot for [freebitco.in](http://freebitco.in/?r=856671)
 
-Satoshis go to **1PTBfDNpheyH5743a6PJJctzCSmiHxxouV** if you are feeling generous :P
+See my other inteligent apps at [Atlas](http://bit.ly/atlas_254)
 
 ### To learn how to use this bot go to the [WIKI](https://github.com/mbithy/Trevel/wiki)
 
